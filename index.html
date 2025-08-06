@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tap For All - Complete Service Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active">
+        <header class="app-header">
+            <div class="header-content">
+                <h1><i class="fas fa-hand-pointer"></i> <span data-text="app_title">Tap For All</span></h1>
+                <div class="header-actions">
+                    <button class="language-toggle" onclick="toggleLanguage()" id="languageToggle">
+                        <i class="fas fa-language"></i>
+                        <span id="languageText">മലയാളം</span>
+                    </button>
+                    <button class="contact-btn" onclick="showContacts()">
+                        <i class="fas fa-users"></i>
+                    </button>
+                    <button class="emergency-btn" onclick="showEmergency()">
+                        <i class="fas fa-exclamation-triangle"></i> <span data-text="emergency">SOS</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="user-welcome">
+                <div class="current-user" id="currentUser">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-info">
+                        <h3 data-text="welcome">Welcome to Tap4All</h3>
+                        <p data-text="primary_account">Primary Account</p>
+                    </div>
+                    <button class="switch-user" onclick="showUserSwitch()">
+                        <i class="fas fa-exchange-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="search-section">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" data-placeholder="search_placeholder" placeholder="Search for services" id="serviceSearch" oninput="filterServices()">
+                </div>
+            </div>
+
+            <div class="service-categories" id="serviceCategories">
+                <!-- Service categories will be populated by JavaScript -->
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="showHome()">
+                <i class="fas fa-home"></i>
+                <span data-text="home">Home</span>
+            </button>
+            <button class="nav-item" onclick="showBookings()">
+                <i class="fas fa-calendar-alt"></i>
+                <span data-text="bookings">Bookings</span>
+            </button>
+            <button class="nav-item" onclick="showContacts()">
+                <i class="fas fa-users"></i>
+                <span data-text="contacts">Contacts</span>
+            </button>
+            <button class="nav-item" onclick="showProfile()">
+                <i class="fas fa-user"></i>
+                <span data-text="profile">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Service Category Screen -->
+    <div id="category-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="showHome()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 id="categoryTitle" data-text="services">Services</h2>
+            <button class="emergency-btn" onclick="showEmergency()">
+                <i class="fas fa-exclamation-triangle"></i>
+            </button>
+        </header>
+
+        <main class="main-content">
+            <div class="services-grid" id="servicesGrid">
+                <!-- Specific services will be populated by JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Service Providers Screen -->
+    <div id="providers-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 id="serviceTitle" data-text="service_providers">Service Providers</h2>
+        </header>
+
+        <div class="filter-section">
+            <button class="filter-btn" onclick="toggleFilters()">
+                <i class="fas fa-filter"></i> <span data-text="filters">Filters</span>
+            </button>
+            <select class="sort-select" id="sortSelect" onchange="sortProviders()">
+                <option value="rating" data-text="sort_rating">Sort by Rating</option>
+                <option value="price" data-text="sort_price">Sort by Price</option>
+                <option value="experience" data-text="sort_experience">Sort by Experience</option>
+                <option value="availability" data-text="sort_availability">Sort by Availability</option>
+            </select>
+        </div>
+
+        <main class="main-content">
+            <div class="providers-list" id="providersList">
+                <!-- Service providers will be populated by JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Booking Form Screen -->
+    <div id="booking-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 data-text="book_service">Book Service</h2>
+        </header>
+
+        <main class="main-content">
+            <form id="bookingForm" class="booking-form">
+                <div class="selected-provider" id="selectedProvider">
+                    <!-- Provider details will be shown here -->
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span data-text="service_location">Service Location</span>
+                    </label>
+                    <input type="text" class="form-control" id="serviceLocation" data-placeholder="enter_address" placeholder="Enter your address" required>
+                    <button type="button" class="gps-btn" onclick="useCurrentLocation()">
+                        <i class="fas fa-crosshairs"></i> <span data-text="use_gps">Use GPS</span>
+                    </button>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" data-text="date">Date</label>
+                        <input type="date" class="form-control" id="serviceDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-text="time">Time</label>
+                        <input type="time" class="form-control" id="serviceTime" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-text="service_duration">Service Duration</label>
+                    <select class="form-control" id="serviceDuration">
+                        <option value="1" data-text="1_hour">1 Hour</option>
+                        <option value="2" data-text="2_hours">2 Hours</option>
+                        <option value="4" data-text="4_hours">4 Hours</option>
+                        <option value="8" data-text="full_day">8 Hours (Full Day)</option>
+                        <option value="custom" data-text="custom_duration">Custom Duration</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-text="special_requirements">Special Requirements</label>
+                    <textarea class="form-control" id="specialRequirements" rows="3" data-placeholder="describe_requirements" placeholder="Describe any specific requirements..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-text="booking_for">Booking For</label>
+                    <select class="form-control" id="bookingFor">
+                        <option value="self" data-text="myself">Myself</option>
+                        <!-- Contact options will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <div class="price-estimate" id="priceEstimate">
+                    <!-- Price breakdown will be shown here -->
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--full-width">
+                    <span data-text="proceed_payment">Proceed to Payment</span>
+                </button>
+            </form>
+        </main>
+    </div>
+
+    <!-- Payment Screen -->
+    <div id="payment-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 data-text="payment">Payment</h2>
+        </header>
+
+        <main class="main-content">
+            <div class="booking-summary" id="paymentSummary">
+                <!-- Booking summary will be populated -->
+            </div>
+
+            <div class="payment-section">
+                <h3 data-text="payment_method">Payment Method</h3>
+                <div class="payment-methods" id="paymentMethods">
+                    <!-- Payment options will be populated -->
+                </div>
+            </div>
+
+            <div class="terms-section">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="termsAccept" required>
+                    <span class="checkmark"></span>
+                    <span data-text="accept_terms">I accept the Terms & Conditions</span>
+                </label>
+            </div>
+
+            <button class="btn btn--primary btn--full-width" onclick="confirmPayment()" id="paymentBtn" disabled>
+                <span data-text="confirm_pay">Confirm & Pay</span>
+            </button>
+        </main>
+    </div>
+
+    <!-- Booking Status Screen -->
+    <div id="status-screen" class="screen">
+        <header class="screen-header">
+            <h2 data-text="service_status">Service Status</h2>
+            <button class="emergency-btn" onclick="showEmergency()">
+                <i class="fas fa-exclamation-triangle"></i> <span data-text="emergency">SOS</span>
+            </button>
+        </header>
+
+        <main class="main-content">
+            <div class="status-card" id="statusCard">
+                <div class="status-indicator">
+                    <div class="status-progress" id="statusProgress"></div>
+                </div>
+                <h3 id="statusTitle" data-text="service_confirmed">Service Confirmed</h3>
+                <p id="statusMessage" data-text="provider_on_way">Your service provider is on the way</p>
+            </div>
+
+            <div class="provider-info" id="providerInfo">
+                <!-- Provider details will be populated -->
+            </div>
+
+            <div class="service-tracking">
+                <div class="tracking-placeholder">
+                    <i class="fas fa-route"></i>
+                    <p data-text="live_tracking">Live tracking</p>
+                    <div class="eta-info">
+                        <span id="etaTime">15 min</span>
+                        <span data-text="eta">ETA</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn--outline" onclick="callProvider()">
+                    <i class="fas fa-phone"></i> <span data-text="call">Call</span>
+                </button>
+                <button class="btn btn--outline" onclick="chatProvider()">
+                    <i class="fas fa-comment"></i> <span data-text="chat">Chat</span>
+                </button>
+                <button class="btn btn--outline" onclick="shareService()">
+                    <i class="fas fa-share"></i> <span data-text="share">Share</span>
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Contacts Management Screen -->
+    <div id="contacts-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="showHome()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 data-text="contacts">Contacts</h2>
+            <button class="add-contact-btn" onclick="showAddContact()">
+                <i class="fas fa-plus"></i>
+            </button>
+        </header>
+
+        <main class="main-content">
+            <div class="contacts-list" id="contactsList">
+                <!-- Contacts will be populated by JavaScript -->
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-item" onclick="showHome()">
+                <i class="fas fa-home"></i>
+                <span data-text="home">Home</span>
+            </button>
+            <button class="nav-item" onclick="showBookings()">
+                <i class="fas fa-calendar-alt"></i>
+                <span data-text="bookings">Bookings</span>
+            </button>
+            <button class="nav-item active" onclick="showContacts()">
+                <i class="fas fa-users"></i>
+                <span data-text="contacts">Contacts</span>
+            </button>
+            <button class="nav-item" onclick="showProfile()">
+                <i class="fas fa-user"></i>
+                <span data-text="profile">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Add Contact Screen -->
+    <div id="add-contact-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="showContacts()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 data-text="add_contact">Add Contact</h2>
+        </header>
+
+        <main class="main-content">
+            <form id="addContactForm" class="contact-form">
+                <div class="form-group">
+                    <label class="form-label" data-text="full_name">Full Name</label>
+                    <input type="text" class="form-control" id="contactName" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-text="phone_number">Phone Number</label>
+                    <input type="tel" class="form-control" id="contactPhone" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-text="relationship">Relationship</label>
+                    <select class="form-control" id="contactRelationship" required>
+                        <option value="" data-text="select_relationship">Select relationship</option>
+                        <!-- Relationships will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-text="permission_level">Permission Level</label>
+                    <select class="form-control" id="contactPermission" required>
+                        <!-- Permissions will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="emergencyContact">
+                        <span class="checkmark"></span>
+                        <span data-text="emergency_contact">Emergency Contact</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--full-width">
+                    <span data-text="add_contact">Add Contact</span>
+                </button>
+            </form>
+        </main>
+    </div>
+
+    <!-- Bookings Screen -->
+    <div id="bookings-screen" class="screen">
+        <header class="screen-header">
+            <h2 data-text="my_bookings">My Bookings</h2>
+        </header>
+        
+        <div class="booking-tabs">
+            <button class="tab-btn active" onclick="showBookingTab('active')" data-text="active">Active</button>
+            <button class="tab-btn" onclick="showBookingTab('history')" data-text="history">History</button>
+            <button class="tab-btn" onclick="showBookingTab('scheduled')" data-text="scheduled">Scheduled</button>
+        </div>
+
+        <main class="main-content">
+            <div class="bookings-list" id="bookingsList">
+                <!-- Bookings will be populated by JavaScript -->
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-item" onclick="showHome()">
+                <i class="fas fa-home"></i>
+                <span data-text="home">Home</span>
+            </button>
+            <button class="nav-item active" onclick="showBookings()">
+                <i class="fas fa-calendar-alt"></i>
+                <span data-text="bookings">Bookings</span>
+            </button>
+            <button class="nav-item" onclick="showContacts()">
+                <i class="fas fa-users"></i>
+                <span data-text="contacts">Contacts</span>
+            </button>
+            <button class="nav-item" onclick="showProfile()">
+                <i class="fas fa-user"></i>
+                <span data-text="profile">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Profile Screen -->
+    <div id="profile-screen" class="screen">
+        <header class="screen-header">
+            <h2 data-text="profile">Profile</h2>
+        </header>
+        
+        <main class="main-content">
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h3>John Doe</h3>
+                <p>+91 98765 43210</p>
+                <div class="profile-stats">
+                    <div class="stat">
+                        <span class="stat-value">25</span>
+                        <span class="stat-label" data-text="services">Services</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">4.8</span>
+                        <span class="stat-label" data-text="rating">Rating</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-menu">
+                <button class="menu-item">
+                    <i class="fas fa-edit"></i>
+                    <span data-text="edit_profile">Edit Profile</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span data-text="settings">Settings</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="menu-item">
+                    <i class="fas fa-credit-card"></i>
+                    <span data-text="payment_methods">Payment Methods</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="menu-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span data-text="saved_addresses">Saved Addresses</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="menu-item">
+                    <i class="fas fa-star"></i>
+                    <span data-text="rate_app">Rate App</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="menu-item">
+                    <i class="fas fa-life-ring"></i>
+                    <span data-text="help_support">Help & Support</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <button class="nav-item" onclick="showHome()">
+                <i class="fas fa-home"></i>
+                <span data-text="home">Home</span>
+            </button>
+            <button class="nav-item" onclick="showBookings()">
+                <i class="fas fa-calendar-alt"></i>
+                <span data-text="bookings">Bookings</span>
+            </button>
+            <button class="nav-item" onclick="showContacts()">
+                <i class="fas fa-users"></i>
+                <span data-text="contacts">Contacts</span>
+            </button>
+            <button class="nav-item active" onclick="showProfile()">
+                <i class="fas fa-user"></i>
+                <span data-text="profile">Profile</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Service Rating Screen -->
+    <div id="rating-screen" class="screen">
+        <header class="screen-header">
+            <button class="back-btn" onclick="showBookings()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h2 data-text="rate_service">Rate Service</h2>
+        </header>
+
+        <main class="main-content">
+            <div class="completion-card">
+                <div class="completion-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 data-text="service_completed">Service Completed!</h3>
+                <p data-text="how_experience">How was your experience?</p>
+            </div>
+
+            <div class="rating-section">
+                <h3 data-text="rate_service">Rate the Service</h3>
+                <div class="star-rating" id="starRating">
+                    <span class="star" data-rating="1">★</span>
+                    <span class="star" data-rating="2">★</span>
+                    <span class="star" data-rating="3">★</span>
+                    <span class="star" data-rating="4">★</span>
+                    <span class="star" data-rating="5">★</span>
+                </div>
+                <textarea class="form-control feedback-text" data-placeholder="share_feedback" placeholder="Share your feedback..." id="feedbackText"></textarea>
+            </div>
+
+            <div class="tip-section">
+                <h3 data-text="add_tip">Add Tip (Optional)</h3>
+                <div class="tip-options">
+                    <button class="tip-btn" data-tip="0" data-text="no_tip">No Tip</button>
+                    <button class="tip-btn" data-tip="50">₹50</button>
+                    <button class="tip-btn" data-tip="100">₹100</button>
+                    <button class="tip-btn" data-tip="200">₹200</button>
+                </div>
+            </div>
+
+            <button class="btn btn--primary btn--full-width" onclick="submitRating()">
+                <span data-text="submit_rating">Submit Rating</span>
+            </button>
+        </main>
+    </div>
+
+    <!-- User Switch Modal -->
+    <div id="user-switch-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 data-text="switch_user">Switch User</h3>
+                <button class="close-btn" onclick="hideUserSwitch()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="user-list" id="userList">
+                <!-- Users will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Emergency/SOS Modal -->
+    <div id="emergency-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="emergency-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2 data-text="emergency_support">Emergency Support</h2>
+            </div>
+            <div class="emergency-actions" id="emergencyActions">
+                <!-- Emergency services will be populated by JavaScript -->
+            </div>
+            <button class="btn btn--outline" onclick="hideEmergency()" data-text="cancel">Cancel</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
